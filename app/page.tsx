@@ -368,7 +368,7 @@ export default function HomePage() {
             </p>
           </div>
           <ul className="flex flex-col gap-2.5 text-sm flex-1" style={{ color: "var(--color-muted)" }}>
-            {["Всё из бесплатного", "Персональный дайджест каждую неделю", "Что планеты говорят о тебе сейчас", "Доставка в Telegram"].map((item) => (
+            {["Всё из бесплатного", "Персональный дайджест каждую неделю", "Что планеты говорят о тебе сейчас", "Доставка в Telegram", "Скоро: личный чат с Anima"].map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <span style={{ color: "var(--color-gold)", marginTop: 1 }}>✦</span>
                 <span>{item}</span>

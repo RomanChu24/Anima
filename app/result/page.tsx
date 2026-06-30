@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { generateReading, ReadingResult } from "@/lib/generateReading";
+import ShareButton from "@/components/ShareButton";
 
 const PLANET_ICONS: Record<string, string> = {
   sun: "☀",
@@ -167,11 +168,43 @@ export default async function ResultPage({
         <InsightCardView type="energy" card={reading.energy} delay={0.4} />
       </div>
 
+      {/* CTA подписка */}
+      <div
+        className="mt-10 w-full rounded-2xl p-6 text-center"
+        style={{
+          background: "linear-gradient(135deg, rgba(200,169,107,0.12) 0%, rgba(16,14,42,0.8) 100%)",
+          border: "1px solid rgba(200,169,107,0.3)",
+          animation: "fadeIn 0.6s ease 0.5s both",
+        }}
+      >
+        <p
+          className="text-lg font-medium mb-2"
+          style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
+        >
+          Хочешь знать, что с тобой происходит каждую неделю?
+        </p>
+        <p className="text-sm mb-5" style={{ color: "var(--color-muted)" }}>
+          Персональный дайджест по твоей карте — в Telegram, раз в неделю
+        </p>
+        <Link
+          href="/#pricing"
+          className="inline-block px-6 py-2.5 rounded-full text-sm font-medium"
+          style={{
+            background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)",
+            color: "#08061A",
+          }}
+        >
+          Узнать о подписке
+        </Link>
+      </div>
+
       {/* Footer */}
       <div
-        className="mt-12 text-center flex flex-col gap-4"
-        style={{ animation: "fadeIn 0.6s ease 0.5s both" }}
+        className="mt-8 text-center flex flex-col items-center gap-4"
+        style={{ animation: "fadeIn 0.6s ease 0.6s both" }}
       >
+        <ShareButton name={displayName} />
+
         <Link
           href="/"
           className="text-sm transition-colors duration-200"
