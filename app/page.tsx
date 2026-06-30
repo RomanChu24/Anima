@@ -375,13 +375,15 @@ export default function HomePage() {
               </li>
             ))}
           </ul>
-          <button
-            disabled
-            className="block w-full text-center py-3 rounded-xl text-sm font-medium opacity-40 cursor-not-allowed"
+          <a
+            href="https://web.tribute.tg/s/Zxn"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full text-center py-3 rounded-xl text-sm font-medium transition-all duration-200"
             style={{ background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)", color: "#08061A" }}
           >
-            Скоро доступно
-          </button>
+            Оформить подписку
+          </a>
         </div>
       </div>
     </section>
