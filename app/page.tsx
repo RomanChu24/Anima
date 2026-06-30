@@ -352,12 +352,6 @@ export default function HomePage() {
           className="rounded-2xl p-7 flex flex-col gap-5 relative overflow-hidden"
           style={{ background: "linear-gradient(135deg, rgba(200,169,107,0.12) 0%, rgba(16,14,42,0.8) 100%)", border: "1px solid rgba(200,169,107,0.3)" }}
         >
-          <div
-            className="absolute top-4 right-4 text-xs px-2.5 py-1 rounded-full"
-            style={{ background: "rgba(200,169,107,0.15)", color: "var(--color-gold)", border: "1px solid rgba(200,169,107,0.2)" }}
-          >
-            Скоро
-          </div>
           <div>
             <p className="text-xs tracking-widest uppercase mb-1" style={{ color: "var(--color-muted)" }}>Подписка</p>
             <p
