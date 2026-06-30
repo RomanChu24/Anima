@@ -15,10 +15,42 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://anima-flame.vercel.app";
+
 export const metadata: Metadata = {
-  title: "Anima - Твоя натальная карта",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Натальная карта онлайн бесплатно — Anima",
+    template: "%s — Anima",
+  },
   description:
-    "Персональный разбор через архетипы планет. Не предсказание - зеркало.",
+    "Бесплатный разбор натальной карты за 2 минуты. Солнце, Луна, Асцендент — персональный текст по твоей дате рождения. Без регистрации.",
+  keywords: [
+    "натальная карта",
+    "натальная карта бесплатно",
+    "натальная карта онлайн",
+    "разбор натальной карты",
+    "гороскоп рождения",
+    "астрология онлайн",
+  ],
+  openGraph: {
+    title: "Натальная карта онлайн бесплатно — Anima",
+    description:
+      "Бесплатный разбор натальной карты за 2 минуты. Персональный текст по твоей дате рождения — без регистрации.",
+    url: siteUrl,
+    siteName: "Anima",
+    locale: "ru_RU",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Натальная карта онлайн бесплатно — Anima",
+    description:
+      "Бесплатный разбор натальной карты за 2 минуты. Без регистрации.",
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
 };
 
 export default function RootLayout({
