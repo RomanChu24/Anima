@@ -360,6 +360,16 @@ export default function HomePage() {
             >
               399 ₽<span className="text-lg" style={{ color: "var(--color-muted)" }}>/мес</span>
             </p>
+            <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+              или{" "}
+              <span style={{ color: "var(--color-gold)" }}>2 990 ₽/год</span>
+              <span
+                className="ml-2 text-xs px-1.5 py-0.5 rounded"
+                style={{ background: "rgba(200,169,107,0.15)", color: "var(--color-gold)" }}
+              >
+                −37%
+              </span>
+            </p>
           </div>
           <ul className="flex flex-col gap-2.5 text-sm flex-1" style={{ color: "var(--color-muted)" }}>
             {["Всё из бесплатного", "Персональный дайджест каждую неделю", "Что планеты говорят о тебе сейчас", "Доставка в Telegram", "Скоро: личный чат с Anima"].map((item) => (
