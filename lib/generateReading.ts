@@ -101,7 +101,7 @@ export async function generateReading(params: {
       "X-Title": "Anima",
     },
     body: JSON.stringify({
-      model: process.env.OPENROUTER_MODEL || "anthropic/claude-3-haiku-20240307",
+      model: process.env.OPENROUTER_MODEL || "openai/gpt-4o-mini",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
