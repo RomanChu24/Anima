@@ -4,10 +4,6 @@ import { generateReading } from "@/lib/generateReading";
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN!;
 const API = `https://api.telegram.org/bot${TOKEN}`;
 
-// Temporary in-memory state for multi-step dialog (resets on cold start)
-// Replace with Vercel KV in Phase 3
-const userState = new Map<number, { step: string; name?: string; date?: string; time?: string }>();
-
 async function sendMessage(chatId: number, text: string, parseMode = "HTML") {
   await fetch(`${API}/sendMessage`, {
     method: "POST",
@@ -16,60 +12,49 @@ async function sendMessage(chatId: number, text: string, parseMode = "HTML") {
   });
 }
 
+// Parse: "Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город" or "Имя, ДД.ММ.ГГГГ, не знаю, Город"
+function parseData(text: string) {
+  const parts = text.split(",").map((s) => s.trim());
+  if (parts.length < 3) return null;
+  const [name, date, timeOrNo, ...cityParts] = parts;
+  if (!/^\d{2}\.\d{2}\.\d{4}$/.test(date)) return null;
+  const time = timeOrNo.toLowerCase() === "не знаю" ? "" : timeOrNo;
+  const city = cityParts.join(", ") || "";
+  return { name, date, time, city };
+}
+
 async function handleUpdate(update: any) {
   const msg = update.message;
   if (!msg?.text) return;
 
   const chatId: number = msg.chat.id;
   const text: string = msg.text.trim();
-  const state = userState.get(chatId) || { step: "idle" };
 
-  if (text === "/start") {
-    userState.set(chatId, { step: "ask_name" });
+  if (text === "/start" || text.startsWith("/start ")) {
     await sendMessage(
       chatId,
-      `✦ <b>Привет, я Anima</b>\n\nТвой персональный компаньон по натальной карте.\n\nКак тебя зовут?`
+      `✦ <b>Привет, я Anima</b>\n\nТвой персональный компаньон по натальной карте.\n\nПришли данные одним сообщением в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>\n\nЕсли не знаешь время рождения:\n<code>Имя, ДД.ММ.ГГГГ, не знаю, Город</code>\n\n<i>Пример: Мария, 15.03.1995, 14:30, Москва</i>`
     );
     return;
   }
 
-  if (state.step === "ask_name") {
-    userState.set(chatId, { ...state, step: "ask_date", name: text });
-    await sendMessage(chatId, `Приятно познакомиться, ${text} ✦\n\nВведи дату рождения в формате <b>ДД.ММ.ГГГГ</b>`);
-    return;
-  }
-
-  if (state.step === "ask_date") {
-    if (!/^\d{2}\.\d{2}\.\d{4}$/.test(text)) {
-      await sendMessage(chatId, "Введи дату в формате <b>ДД.ММ.ГГГГ</b>, например 15.03.1995");
-      return;
-    }
-    userState.set(chatId, { ...state, step: "ask_time", date: text });
-    await sendMessage(chatId, "Время рождения в формате <b>ЧЧ:ММ</b> — если знаешь.\n\nЕсли нет, напиши <b>не знаю</b>");
-    return;
-  }
-
-  if (state.step === "ask_time") {
-    const time = text.toLowerCase() === "не знаю" ? "" : text;
-    userState.set(chatId, { ...state, step: "ask_city", time });
-    await sendMessage(chatId, "Город рождения?");
-    return;
-  }
-
-  if (state.step === "ask_city") {
-    const city = text;
-    const { name = "", date = "", time = "" } = state;
-    userState.set(chatId, { step: "idle" });
-
+  const data = parseData(text);
+  if (data) {
     await sendMessage(chatId, "✦ Составляю твою карту, подожди немного...");
 
-    const [d, m, y] = date.split(".");
+    const [d, m, y] = data.date.split(".");
     const isoDate = `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
 
     try {
-      const reading = await generateReading({ name, date: isoDate, time, city });
+      const reading = await generateReading({
+        name: data.name,
+        date: isoDate,
+        time: data.time,
+        city: data.city,
+      });
 
-      const response = `✦ <b>Натальная карта ${reading.name}</b>\n\n` +
+      const response =
+        `✦ <b>Натальная карта ${reading.name}</b>\n\n` +
         `☀ <b>${reading.sun.title}</b>\n<i>${reading.sun.subtitle}</i>\n${reading.sun.text}\n\n` +
         `☽ <b>${reading.moon.title}</b>\n<i>${reading.moon.subtitle}</i>\n${reading.moon.text}\n\n` +
         `↑ <b>${reading.rising.title}</b>\n<i>${reading.rising.subtitle}</i>\n${reading.rising.text}\n\n` +
@@ -78,7 +63,7 @@ async function handleUpdate(update: any) {
       await sendMessage(chatId, response);
       await sendMessage(
         chatId,
-        `\nЧтобы получать персональный дайджест каждую неделю — оформи подписку:\n<a href="https://web.tribute.tg/s/Zxn">Подписаться за 399 ₽/мес</a>`
+        `Хочешь получать персональный дайджест каждую неделю?\n\n<a href="https://web.tribute.tg/s/Zxn">Подписаться за 399 ₽/мес</a>`
       );
     } catch {
       await sendMessage(chatId, "Что-то пошло не так. Попробуй ещё раз — напиши /start");
@@ -86,7 +71,10 @@ async function handleUpdate(update: any) {
     return;
   }
 
-  await sendMessage(chatId, "Напиши /start чтобы начать ✦");
+  await sendMessage(
+    chatId,
+    `Напиши /start чтобы начать ✦\n\nИли пришли данные в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>`
+  );
 }
 
 export async function POST(req: NextRequest) {
