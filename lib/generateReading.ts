@@ -101,7 +101,7 @@ export async function generateReading(params: {
       "X-Title": "Anima",
     },
     body: JSON.stringify({
-      model: process.env.OPENROUTER_MODEL || "anthropic/claude-haiku-4-5-20251001",
+      model: process.env.OPENROUTER_MODEL || "anthropic/claude-3.5-haiku",
       messages: [
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
