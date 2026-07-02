@@ -62,8 +62,9 @@ export async function generateReading(params: {
   date?: string;
   time?: string;
   city?: string;
+  currentDate?: string;
 }): Promise<ReadingResult> {
-  const { name = "подруга", date = "", time = "", city = "" } = params;
+  const { name = "подруга", date = "", time = "", city = "", currentDate = "" } = params;
 
   const key = process.env.OPENROUTER_KEY;
   if (!key || key === "your_key_here") {
@@ -71,7 +72,12 @@ export async function generateReading(params: {
     return { ...MOCK_READING, name: name || "твоя карта" };
   }
 
+  const dateLabel = currentDate
+    ? new Date(currentDate + "T12:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
+    : "прямо сейчас";
+
   const userPrompt = `Данные рождения: Имя: ${name}, Дата: ${date}, Время: ${time || "неизвестно"}, Город: ${city || "неизвестен"}.
+Текущая дата: ${currentDate || "неизвестна"}.
 
 Верни JSON строго в таком формате (без markdown, только чистый JSON):
 {
@@ -96,8 +102,8 @@ export async function generateReading(params: {
   },
   "energy": {
     "title": "Энергия сейчас",
-    "subtitle": "Актуальный период",
-    "text": "3-4 предложения про текущую энергию и то, на что стоит обратить внимание прямо сейчас"
+    "subtitle": "${dateLabel}",
+    "text": "3-4 предложения про актуальные транзиты и то на что стоит обратить внимание на этой неделе"
   }
 }`;
 

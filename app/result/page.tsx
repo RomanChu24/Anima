@@ -115,9 +115,11 @@ export default async function ResultPage({
     return <ErrorView />;
   }
 
+  const currentDate = new Date().toISOString().split("T")[0];
+
   let reading: ReadingResult;
   try {
-    reading = await generateReading({ name, date, time, city });
+    reading = await generateReading({ name, date, time, city, currentDate });
   } catch {
     return <ErrorView />;
   }
@@ -184,18 +186,23 @@ export default async function ResultPage({
           Хочешь знать, что с тобой происходит каждую неделю?
         </p>
         <p className="text-sm mb-5" style={{ color: "var(--color-muted)" }}>
-          Персональный дайджест по твоей карте — в Telegram, раз в неделю
+          Персональный дайджест по твоей карте - в Telegram, каждый понедельник
         </p>
-        <Link
-          href="/#pricing"
+        <a
+          href="https://t.me/Anima_Card_Bot?start=from_web"
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-block px-6 py-2.5 rounded-full text-sm font-medium"
           style={{
             background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)",
             color: "#08061A",
           }}
         >
-          Узнать о подписке
-        </Link>
+          Открыть в Telegram
+        </a>
+        <p className="text-xs mt-3" style={{ color: "var(--color-muted)", opacity: 0.5 }}>
+          Бесплатно ✦ <Link href="/#pricing" style={{ textDecoration: "underline" }}>Подробности о подписке</Link>
+        </p>
       </div>
 
       {/* Footer */}

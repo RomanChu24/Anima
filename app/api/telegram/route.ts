@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReading } from "@/lib/generateReading";
+import { saveUser, getUser, deleteUser } from "@/lib/kv";
 
 export const maxDuration = 60;
 
@@ -32,11 +33,39 @@ async function handleUpdate(update: any) {
   const chatId: number = msg.chat.id;
   const text: string = msg.text.trim();
 
-  if (text === "/start" || text.startsWith("/start ")) {
+  // /stop - unsubscribe from weekly digests
+  if (text === "/stop") {
+    try { await deleteUser(chatId); } catch {}
     await sendMessage(
       chatId,
-      `✦ <b>Привет, я Anima</b>\n\nТвой персональный компаньон по натальной карте.\n\nПришли данные одним сообщением в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>\n\nЕсли не знаешь время рождения:\n<code>Имя, ДД.ММ.ГГГГ, не знаю, Город</code>\n\n<i>Пример: Мария, 15.03.1995, 14:30, Москва</i>`
+      "✦ Ты отписана от еженедельных дайджестов.\n\nВозвращайся когда захочешь - напиши /start"
     );
+    return;
+  }
+
+  // /start [from_web]
+  if (text === "/start" || text.startsWith("/start ")) {
+    const fromWeb = text.includes("from_web");
+
+    let existing = null;
+    try { existing = await getUser(chatId); } catch {}
+
+    if (existing) {
+      await sendMessage(
+        chatId,
+        `✦ <b>С возвращением, ${existing.name}!</b>\n\nТвоя карта сохранена. Каждый понедельник получаешь персональный дайджест.\n\nХочешь обновить данные? Пришли снова:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>`
+      );
+    } else if (fromWeb) {
+      await sendMessage(
+        chatId,
+        `✦ <b>Привет, я Anima</b>\n\nТы только что увидела свою карту на сайте. Сохраним её - и каждый понедельник ты будешь получать персональный дайджест.\n\nПришли данные:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>\n\n<i>Пример: Мария, 15.03.1995, 14:30, Москва</i>`
+      );
+    } else {
+      await sendMessage(
+        chatId,
+        `✦ <b>Привет, я Anima</b>\n\nТвой персональный компаньон по натальной карте.\n\nПришли данные одним сообщением:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>\n\nЕсли не знаешь время рождения:\n<code>Имя, ДД.ММ.ГГГГ, не знаю, Город</code>\n\n<i>Пример: Мария, 15.03.1995, 14:30, Москва</i>`
+      );
+    }
     return;
   }
 
@@ -46,6 +75,7 @@ async function handleUpdate(update: any) {
 
     const [d, m, y] = data.date.split(".");
     const isoDate = `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+    const currentDate = new Date().toISOString().split("T")[0];
 
     try {
       const reading = await generateReading({
@@ -53,7 +83,20 @@ async function handleUpdate(update: any) {
         date: isoDate,
         time: data.time,
         city: data.city,
+        currentDate,
       });
+
+      // Save user for weekly digests (silent fail if KV not configured)
+      try {
+        await saveUser({
+          telegramId: chatId,
+          name: data.name,
+          birthDate: isoDate,
+          birthTime: data.time,
+          city: data.city,
+          createdAt: new Date().toISOString(),
+        });
+      } catch {}
 
       const response =
         `✦ <b>Натальная карта ${reading.name}</b>\n\n` +
@@ -65,10 +108,10 @@ async function handleUpdate(update: any) {
       await sendMessage(chatId, response);
       await sendMessage(
         chatId,
-        `Хочешь получать персональный дайджест каждую неделю?\n\n<a href="https://web.tribute.tg/s/Zxn">Подписаться за 399 ₽/мес</a>`
+        `🗓 <b>Каждый понедельник</b> ты будешь получать персональный дайджест - бесплатно.\n\nТвои данные сохранены ✦\n\nЕсли захочешь поддержать проект:\n<a href="https://web.tribute.tg/s/Zxn">Подписка 399 ₽/мес</a>\n\nОтписаться: /stop`
       );
     } catch {
-      await sendMessage(chatId, "Что-то пошло не так. Попробуй ещё раз — напиши /start");
+      await sendMessage(chatId, "Что-то пошло не так. Попробуй ещё раз - напиши /start");
     }
     return;
   }
