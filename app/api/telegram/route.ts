@@ -67,8 +67,8 @@ async function handleUpdate(update: any) {
         chatId,
         `Хочешь получать персональный дайджест каждую неделю?\n\n<a href="https://web.tribute.tg/s/Zxn">Подписаться за 399 ₽/мес</a>`
       );
-    } catch (e: any) {
-      await sendMessage(chatId, `[debug] Ошибка: ${e?.message || String(e)}`);
+    } catch {
+      await sendMessage(chatId, "Что-то пошло не так. Попробуй ещё раз — напиши /start");
     }
     return;
   }

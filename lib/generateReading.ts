@@ -46,7 +46,16 @@ const SYSTEM_PROMPT = `Ты - Anima, мудрый ИИ-компаньон кот
 Используй принцип Барнума-Форера: специфика через астрологические плейсменты, узнаваемость через реальные паттерны.
 Не банально, не шаблонно. Каждый текст уникален для этого человека.
 На основе данных рождения определи: Солнце (по дате), Луну (по дате и времени), Асцендент (по времени и городу).
-Верни ТОЛЬКО валидный JSON без markdown и пояснений.`;
+Верни ТОЛЬКО валидный JSON без markdown-блоков, без пояснений, без \`\`\`.`;
+
+function extractJSON(raw: string): string {
+  const fenced = raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenced) return fenced[1].trim();
+  const firstBrace = raw.indexOf("{");
+  const lastBrace = raw.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1) return raw.slice(firstBrace, lastBrace + 1);
+  return raw.trim();
+}
 
 export async function generateReading(params: {
   name?: string;
@@ -64,7 +73,7 @@ export async function generateReading(params: {
 
   const userPrompt = `Данные рождения: Имя: ${name}, Дата: ${date}, Время: ${time || "неизвестно"}, Город: ${city || "неизвестен"}.
 
-Верни JSON строго в таком формате:
+Верни JSON строго в таком формате (без markdown, только чистый JSON):
 {
   "name": "${name}",
   "sun": {
@@ -97,7 +106,7 @@ export async function generateReading(params: {
     headers: {
       Authorization: `Bearer ${key}`,
       "Content-Type": "application/json",
-      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://anima.app",
+      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://anima-flame.vercel.app",
       "X-Title": "Anima",
     },
     body: JSON.stringify({
@@ -106,7 +115,6 @@ export async function generateReading(params: {
         { role: "system", content: SYSTEM_PROMPT },
         { role: "user", content: userPrompt },
       ],
-      response_format: { type: "json_object" },
       temperature: 0.85,
       max_tokens: 1200,
     }),
@@ -121,5 +129,9 @@ export async function generateReading(params: {
   const content = data?.choices?.[0]?.message?.content;
   if (!content) throw new Error("Empty response from OpenRouter");
 
-  return JSON.parse(content) as ReadingResult;
+  try {
+    return JSON.parse(extractJSON(content)) as ReadingResult;
+  } catch {
+    throw new Error(`JSON parse failed. Raw: ${content.slice(0, 200)}`);
+  }
 }
