@@ -389,6 +389,18 @@ export default function HomePage() {
         </div>
       </div>
     </section>
+
+    {/* Footer */}
+    <footer className="w-full max-w-2xl mx-auto px-6 pb-12 text-center flex flex-col gap-4">
+      <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs" style={{ color: "var(--color-muted)", opacity: 0.45 }}>
+        <span>✦ Точные астрономические расчёты</span>
+        <span>✦ Психологические архетипы Юнга</span>
+        <span>✦ ИИ-интерпретация Claude</span>
+      </div>
+      <p className="text-xs leading-relaxed" style={{ color: "var(--color-muted)", opacity: 0.3 }}>
+        Прогноз носит символический и рекомендательный характер. Не является руководством к действию, медицинской, юридической или финансовой консультацией. Все решения принимаете вы самостоятельно.
+      </p>
+    </footer>
     </>
   );
 }
