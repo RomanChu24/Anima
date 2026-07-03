@@ -290,6 +290,20 @@ export default function HomePage() {
           </div>
         ))}
       </div>
+
+      {/* Tech RTB */}
+      <div className="mt-16 pt-8 border-t flex flex-wrap justify-center gap-x-8 gap-y-3" style={{ borderColor: "rgba(200,169,107,0.1)" }}>
+        {[
+          { label: "Астрономическая библиотека", sub: "точные координаты планет" },
+          { label: "Эфемериды NASA/JPL", sub: "данные о положении планет" },
+          { label: "Архетипы Юнга", sub: "психологическая интерпретация" },
+        ].map(({ label, sub }) => (
+          <div key={label} className="text-center">
+            <p className="text-xs font-medium" style={{ color: "var(--color-gold)", opacity: 0.8 }}>{label}</p>
+            <p className="text-xs mt-0.5" style={{ color: "var(--color-muted)", opacity: 0.5 }}>{sub}</p>
+          </div>
+        ))}
+      </div>
     </section>
 
     {/* Разделитель */}
