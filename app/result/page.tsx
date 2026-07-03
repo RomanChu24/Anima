@@ -6,6 +6,10 @@ const PLANET_ICONS: Record<string, string> = {
   sun: "☀",
   moon: "☽",
   rising: "↑",
+  mercury: "☿",
+  mars: "♂",
+  jupiter: "♃",
+  saturn: "♄",
   energy: "✦",
 };
 
@@ -13,6 +17,10 @@ const CARD_ACCENT: Record<string, string> = {
   sun: "rgba(200,169,107,0.12)",
   moon: "rgba(123,111,212,0.12)",
   rising: "rgba(200,169,107,0.08)",
+  mercury: "rgba(100,180,210,0.10)",
+  mars: "rgba(210,80,80,0.10)",
+  jupiter: "rgba(180,140,80,0.10)",
+  saturn: "rgba(120,120,160,0.10)",
   energy: "rgba(123,111,212,0.08)",
 };
 
@@ -29,7 +37,7 @@ function InsightCardView({
     <div
       className="rounded-2xl p-6 flex flex-col gap-4"
       style={{
-        background: `linear-gradient(135deg, ${CARD_ACCENT[type]}, rgba(16,14,42,0.6))`,
+        background: `linear-gradient(135deg, ${CARD_ACCENT[type] ?? "rgba(200,169,107,0.08)"}, rgba(16,14,42,0.6))`,
         border: "1px solid rgba(200,169,107,0.12)",
         backdropFilter: "blur(8px)",
         animation: `fadeIn 0.6s ease ${delay}s both`,
@@ -40,7 +48,7 @@ function InsightCardView({
           className="text-2xl mt-0.5 shrink-0"
           style={{ color: "var(--color-gold)" }}
         >
-          {PLANET_ICONS[type]}
+          {PLANET_ICONS[type] ?? "✦"}
         </span>
         <div>
           <h3
@@ -71,15 +79,10 @@ function InsightCardView({
 function ErrorView() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 text-center">
-      <span className="text-4xl mb-4" style={{ color: "var(--color-muted)" }}>
-        ✦
-      </span>
+      <span className="text-4xl mb-4" style={{ color: "var(--color-muted)" }}>✦</span>
       <h2
         className="text-2xl font-light mb-3"
-        style={{
-          fontFamily: "var(--font-cormorant), Georgia, serif",
-          color: "var(--color-primary)",
-        }}
+        style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
       >
         Не удалось составить карту
       </h2>
@@ -89,10 +92,7 @@ function ErrorView() {
       <Link
         href="/"
         className="px-6 py-2.5 rounded-full text-sm"
-        style={{
-          border: "1px solid rgba(200,169,107,0.3)",
-          color: "var(--color-gold)",
-        }}
+        style={{ border: "1px solid rgba(200,169,107,0.3)", color: "var(--color-gold)" }}
       >
         Попробовать снова
       </Link>
@@ -111,9 +111,7 @@ export default async function ResultPage({
   const time = typeof p.time === "string" ? p.time : "";
   const city = typeof p.city === "string" ? p.city : "";
 
-  if (!date) {
-    return <ErrorView />;
-  }
+  if (!date) return <ErrorView />;
 
   const currentDate = new Date().toISOString().split("T")[0];
 
@@ -133,44 +131,52 @@ export default async function ResultPage({
       })
     : "";
 
+  const planetCards: Array<{ key: keyof ReadingResult; delay: number }> = [
+    { key: "sun", delay: 0.1 },
+    { key: "moon", delay: 0.15 },
+    { key: "rising", delay: 0.2 },
+    { key: "mercury", delay: 0.25 },
+    { key: "mars", delay: 0.3 },
+    { key: "jupiter", delay: 0.35 },
+    { key: "saturn", delay: 0.4 },
+  ];
+
   return (
     <div className="flex flex-col items-center px-6 py-32 max-w-2xl mx-auto w-full">
       {/* Header */}
-      <div
-        className="text-center mb-12 w-full"
-        style={{ animation: "fadeIn 0.6s ease both" }}
-      >
-        <p
-          className="text-xs tracking-[0.3em] uppercase mb-3"
-          style={{ color: "var(--color-muted)" }}
-        >
+      <div className="text-center mb-12 w-full" style={{ animation: "fadeIn 0.6s ease both" }}>
+        <p className="text-xs tracking-[0.3em] uppercase mb-3" style={{ color: "var(--color-muted)" }}>
           натальная карта
         </p>
         <h1
           className="text-4xl md:text-5xl font-light mb-4"
-          style={{
-            fontFamily: "var(--font-cormorant), Georgia, serif",
-            color: "var(--color-primary)",
-          }}
+          style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
         >
           {displayName}
         </h1>
         <p className="text-sm" style={{ color: "var(--color-muted)" }}>
-          {[formattedDate, time && `${time}`, city]
-            .filter(Boolean)
-            .join(" · ")}
+          {[formattedDate, time && `${time}`, city].filter(Boolean).join(" · ")}
         </p>
       </div>
 
-      {/* Cards grid */}
+      {/* Planet cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        <InsightCardView type="sun" card={reading.sun} delay={0.1} />
-        <InsightCardView type="moon" card={reading.moon} delay={0.2} />
-        <InsightCardView type="rising" card={reading.rising} delay={0.3} />
-        <InsightCardView type="energy" card={reading.energy} delay={0.4} />
+        {planetCards.map(({ key, delay }) => (
+          <InsightCardView
+            key={key}
+            type={key}
+            card={reading[key] as { sign?: string; title: string; subtitle: string; text: string }}
+            delay={delay}
+          />
+        ))}
       </div>
 
-      {/* CTA подписка */}
+      {/* Energy card - full width */}
+      <div className="w-full mt-4">
+        <InsightCardView type="energy" card={reading.energy} delay={0.45} />
+      </div>
+
+      {/* CTA */}
       <div
         className="mt-10 w-full rounded-2xl p-6 text-center"
         style={{
@@ -193,10 +199,7 @@ export default async function ResultPage({
           target="_blank"
           rel="noopener noreferrer"
           className="inline-block px-6 py-2.5 rounded-full text-sm font-medium"
-          style={{
-            background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)",
-            color: "#08061A",
-          }}
+          style={{ background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)", color: "#08061A" }}
         >
           Открыть в Telegram
         </a>
@@ -206,24 +209,12 @@ export default async function ResultPage({
       </div>
 
       {/* Footer */}
-      <div
-        className="mt-8 text-center flex flex-col items-center gap-4"
-        style={{ animation: "fadeIn 0.6s ease 0.6s both" }}
-      >
+      <div className="mt-8 text-center flex flex-col items-center gap-4" style={{ animation: "fadeIn 0.6s ease 0.6s both" }}>
         <ShareButton name={displayName} />
-
-        <Link
-          href="/"
-          className="text-sm transition-colors duration-200"
-          style={{ color: "var(--color-gold)", opacity: 0.8 }}
-        >
+        <Link href="/" className="text-sm transition-colors duration-200" style={{ color: "var(--color-gold)", opacity: 0.8 }}>
           ← Составить другую карту
         </Link>
-
-        <p
-          className="text-xs leading-relaxed max-w-sm"
-          style={{ color: "var(--color-muted)", opacity: 0.4 }}
-        >
+        <p className="text-xs leading-relaxed max-w-sm" style={{ color: "var(--color-muted)", opacity: 0.4 }}>
           Anima - пространство для самопознания и рефлексии. Тексты основаны на интерпретации символики натальной карты и носят ознакомительный характер. Не являются психологической консультацией или предсказанием.
         </p>
       </div>

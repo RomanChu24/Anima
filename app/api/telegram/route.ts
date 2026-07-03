@@ -98,14 +98,21 @@ async function handleUpdate(update: any) {
         });
       } catch {}
 
-      const response =
+      const part1 =
         `✦ <b>Натальная карта ${reading.name}</b>\n\n` +
         `☀ <b>${reading.sun.title}</b>\n<i>${reading.sun.subtitle}</i>\n${reading.sun.text}\n\n` +
         `☽ <b>${reading.moon.title}</b>\n<i>${reading.moon.subtitle}</i>\n${reading.moon.text}\n\n` +
-        `↑ <b>${reading.rising.title}</b>\n<i>${reading.rising.subtitle}</i>\n${reading.rising.text}\n\n` +
+        `↑ <b>${reading.rising.title}</b>\n<i>${reading.rising.subtitle}</i>\n${reading.rising.text}`;
+
+      const part2 =
+        `☿ <b>${reading.mercury.title}</b>\n<i>${reading.mercury.subtitle}</i>\n${reading.mercury.text}\n\n` +
+        `♂ <b>${reading.mars.title}</b>\n<i>${reading.mars.subtitle}</i>\n${reading.mars.text}\n\n` +
+        `♃ <b>${reading.jupiter.title}</b>\n<i>${reading.jupiter.subtitle}</i>\n${reading.jupiter.text}\n\n` +
+        `♄ <b>${reading.saturn.title}</b>\n<i>${reading.saturn.subtitle}</i>\n${reading.saturn.text}\n\n` +
         `✦ <b>${reading.energy.title}</b>\n<i>${reading.energy.subtitle}</i>\n${reading.energy.text}`;
 
-      await sendMessage(chatId, response);
+      await sendMessage(chatId, part1);
+      await sendMessage(chatId, part2);
       await sendMessage(
         chatId,
         `🗓 <b>Каждый понедельник</b> ты будешь получать персональный дайджест - бесплатно.\n\nТвои данные сохранены ✦\n\nЕсли захочешь поддержать проект:\n<a href="https://web.tribute.tg/s/Zxn">Подписка 399 ₽/мес</a>\n\nОтписаться: /stop`

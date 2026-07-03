@@ -20,7 +20,7 @@ function getEclipticLon(body: Body, date: Date): number {
 
 function calcAscendant(date: Date, lat: number, lon: number): number {
   const eps = 23.4397 * (Math.PI / 180);
-  const gst = SiderealTime(date); // hours
+  const gst = SiderealTime(date);
   const lst = ((gst + lon / 15) % 24 + 24) % 24;
   const ramc = lst * 15 * (Math.PI / 180);
   const latRad = lat * (Math.PI / 180);
@@ -34,25 +34,28 @@ function calcAscendant(date: Date, lat: number, lon: number): number {
 export interface PlanetPosition {
   sign: string;
   degree: number;
-  label: string; // e.g. "15° Рыбы"
+  label: string;
 }
 
 export interface NatalChart {
   sun: PlanetPosition;
   moon: PlanetPosition;
-  rising: PlanetPosition | null; // null if no birth time
+  mercury: PlanetPosition;
+  mars: PlanetPosition;
+  jupiter: PlanetPosition;
+  saturn: PlanetPosition;
+  rising: PlanetPosition | null;
 }
 
 export function calculateNatalChart(params: {
-  date: string;       // YYYY-MM-DD
-  time: string;       // HH:MM or ""
+  date: string;
+  time: string;
   lat: number;
   lon: number;
 }): NatalChart {
   const { date, time, lat, lon } = params;
   const hasTime = !!time && time.length >= 4;
 
-  // Build UTC date - treat birth time as local time, approximate UTC via longitude
   const utcOffsetHours = Math.round(lon / 15);
   let isoString: string;
   if (hasTime) {
@@ -62,28 +65,29 @@ export function calculateNatalChart(params: {
     const utcDate = new Date(baseDate.getTime() + localMinutes * 60000 - 12 * 3600000);
     isoString = utcDate.toISOString();
   } else {
-    // Use noon for Sun (always accurate), Moon approximate
     isoString = date + "T12:00:00Z";
   }
 
   const d = new Date(isoString);
 
-  const sunLon = getEclipticLon(Body.Sun, d);
-  const moonLon = getEclipticLon(Body.Moon, d);
-
-  const sun = lonToSign(sunLon);
-  const moon = lonToSign(moonLon);
+  const toPos = (body: Body): PlanetPosition => {
+    const s = lonToSign(getEclipticLon(body, d));
+    return { ...s, label: `${s.degree}° ${s.sign}` };
+  };
 
   let rising: PlanetPosition | null = null;
   if (hasTime) {
-    const ascLon = calcAscendant(d, lat, lon);
-    const asc = lonToSign(ascLon);
+    const asc = lonToSign(calcAscendant(d, lat, lon));
     rising = { ...asc, label: `${asc.degree}° ${asc.sign}` };
   }
 
   return {
-    sun: { ...sun, label: `${sun.degree}° ${sun.sign}` },
-    moon: { ...moon, label: `${moon.degree}° ${moon.sign}` },
+    sun: toPos(Body.Sun),
+    moon: toPos(Body.Moon),
+    mercury: toPos(Body.Mercury),
+    mars: toPos(Body.Mars),
+    jupiter: toPos(Body.Jupiter),
+    saturn: toPos(Body.Saturn),
     rising,
   };
 }
@@ -92,6 +96,10 @@ export function chartToPromptText(chart: NatalChart, hasTime: boolean): string {
   const lines = [
     `• Солнце: ${chart.sun.label}`,
     `• Луна: ${chart.moon.label}${!hasTime ? " (время неизвестно - возможна погрешность ±7°)" : ""}`,
+    `• Меркурий: ${chart.mercury.label}`,
+    `• Марс: ${chart.mars.label}`,
+    `• Юпитер: ${chart.jupiter.label}`,
+    `• Сатурн: ${chart.saturn.label}`,
     chart.rising
       ? `• Асцендент: ${chart.rising.label}`
       : `• Асцендент: не определён (время рождения неизвестно)`,
