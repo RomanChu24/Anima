@@ -1,3 +1,6 @@
+import { geocodeCity } from "./geocode";
+import { calculateNatalChart, chartToPromptText } from "./astro";
+
 export interface InsightCard {
   sign?: string;
   title: string;
@@ -45,7 +48,7 @@ const SYSTEM_PROMPT = `Ты - Anima, мудрый ИИ-компаньон кот
 Стиль: конкретный и тёплый, как умная подруга которая знает астрологию. Не предсказываешь - отражаешь.
 Используй принцип Барнума-Форера: специфика через астрологические плейсменты, узнаваемость через реальные паттерны.
 Не банально, не шаблонно. Каждый текст уникален для этого человека.
-На основе данных рождения определи: Солнце (по дате), Луну (по дате и времени), Асцендент (по времени и городу).
+Точные астрологические расчёты уже выполнены и переданы тебе - используй их. Не пересчитывай знаки самостоятельно.
 Верни ТОЛЬКО валидный JSON без markdown-блоков, без пояснений, без \`\`\`.`;
 
 function extractJSON(raw: string): string {
@@ -72,30 +75,45 @@ export async function generateReading(params: {
     return { ...MOCK_READING, name: name || "твоя карта" };
   }
 
+  // Calculate precise natal chart positions
+  let chartText = "";
+  try {
+    const geo = await geocodeCity(city);
+    const chart = calculateNatalChart({
+      date,
+      time,
+      lat: geo?.lat ?? 55.75,
+      lon: geo?.lon ?? 37.62,
+    });
+    chartText = "\nТочные астрологические расчёты:\n" + chartToPromptText(chart, !!time);
+  } catch {
+    // Fall back to LLM-only calculation if astro fails
+  }
+
   const dateLabel = currentDate
     ? new Date(currentDate + "T12:00:00").toLocaleDateString("ru-RU", { day: "numeric", month: "long" })
     : "прямо сейчас";
 
   const userPrompt = `Данные рождения: Имя: ${name}, Дата: ${date}, Время: ${time || "неизвестно"}, Город: ${city || "неизвестен"}.
-Текущая дата: ${currentDate || "неизвестна"}.
+Текущая дата: ${currentDate || "неизвестна"}.${chartText}
 
 Верни JSON строго в таком формате (без markdown, только чистый JSON):
 {
   "name": "${name}",
   "sun": {
-    "sign": "название знака",
+    "sign": "название знака из расчётов",
     "title": "Солнце в [Знак]",
     "subtitle": "Ядро твоей личности",
     "text": "3-4 предложения - тёплый, конкретный текст про суть личности через этот знак"
   },
   "moon": {
-    "sign": "название знака",
+    "sign": "название знака из расчётов",
     "title": "Луна в [Знак]",
     "subtitle": "Твой эмоциональный мир",
     "text": "3-4 предложения про эмоциональные паттерны, потребности, реакции"
   },
   "rising": {
-    "sign": "название знака",
+    "sign": "название знака из расчётов (или пустая строка если неизвестен)",
     "title": "Асцендент в [Знак]",
     "subtitle": "Как тебя видят",
     "text": "3-4 предложения про первое впечатление, маску, стиль подачи себя"
