@@ -253,7 +253,7 @@ export default function HomePage() {
         Как это работает
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {[
           {
             num: "01",
@@ -269,6 +269,11 @@ export default function HomePage() {
             num: "03",
             title: "Твоя карта",
             text: "Пересечение твоего уникального момента и этих паттернов — персональный текст, который мог быть написан только о тебе.",
+          },
+          {
+            num: "04",
+            title: "Точные расчёты",
+            text: "Координаты планет вычисляются по эфемеридам NASA/JPL — тем же данным, которые используют профессиональные астрологи и астрономы.",
           },
         ].map(({ num, title, text }) => (
           <div key={num} className="flex flex-col gap-4">
@@ -287,20 +292,6 @@ export default function HomePage() {
             <p className="text-sm leading-relaxed" style={{ color: "var(--color-muted)" }}>
               {text}
             </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Tech RTB */}
-      <div className="mt-16 pt-8 border-t flex flex-wrap justify-center gap-x-8 gap-y-3" style={{ borderColor: "rgba(200,169,107,0.1)" }}>
-        {[
-          { label: "Астрономическая библиотека", sub: "точные координаты планет" },
-          { label: "Эфемериды NASA/JPL", sub: "данные о положении планет" },
-          { label: "Архетипы Юнга", sub: "психологическая интерпретация" },
-        ].map(({ label, sub }) => (
-          <div key={label} className="text-center">
-            <p className="text-xs font-medium" style={{ color: "var(--color-gold)", opacity: 0.8 }}>{label}</p>
-            <p className="text-xs mt-0.5" style={{ color: "var(--color-muted)", opacity: 0.5 }}>{sub}</p>
           </div>
         ))}
       </div>
