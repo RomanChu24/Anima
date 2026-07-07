@@ -51,6 +51,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteUrl,
   },
+  verification: {
+    yandex: "b10619c3b70601e0",
+  },
 };
 
 export default function RootLayout({
