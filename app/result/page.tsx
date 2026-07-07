@@ -1,6 +1,12 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { generateReading, ReadingResult } from "@/lib/generateReading";
 import ShareButton from "@/components/ShareButton";
+
+export const metadata: Metadata = {
+  title: "Твоя натальная карта",
+  description: "Персональный разбор натальной карты по дате, времени и месту рождения — архетипы, планеты, энергия периода.",
+};
 
 const PLANET_ICONS: Record<string, string> = {
   sun: "☀",

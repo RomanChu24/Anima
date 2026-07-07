@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Политика конфиденциальности",
+  robots: { index: false },
+};
 
 export default function PrivacyPage() {
   return (

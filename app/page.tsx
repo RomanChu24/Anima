@@ -104,7 +104,7 @@ export default function HomePage() {
           Натальная карта
         </h1>
 
-        <p
+        <h2
           className="mb-3 md:mb-6 font-light"
           style={{
             fontFamily: "var(--font-cormorant), Georgia, serif",
@@ -115,7 +115,7 @@ export default function HomePage() {
           }}
         >
           Расшифровка тебя — по дате, времени и месту рождения
-        </p>
+        </h2>
 
         <p
           className="mb-4 md:mb-6"
