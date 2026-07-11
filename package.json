@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "start:amvera": "next build && next start -p 80"
   },
   "dependencies": {
     "@vercel/kv": "^3.0.0",
