@@ -1,0 +1,13 @@
+meta:
+  environment: nodejs
+  toolchain:
+    name: node
+    version: 20
+
+build:
+  buildDir: .
+  buildCmd: npm ci && npm run build
+
+run:
+  persistenceMount: /data
+  runCmd: npx next start -p 80
