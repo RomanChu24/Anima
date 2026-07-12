@@ -120,7 +120,7 @@ export default function HomePage() {
           className="mb-4 md:mb-6"
           style={{ color: "var(--color-muted)", fontSize: "0.8rem" }}
         >
-          4 инсайта о тебе&nbsp;&nbsp;·&nbsp;&nbsp;2 минуты&nbsp;&nbsp;·&nbsp;&nbsp;Бесплатно
+          8 инсайтов о тебе&nbsp;&nbsp;·&nbsp;&nbsp;2 минуты&nbsp;&nbsp;·&nbsp;&nbsp;Бесплатно
         </p>
 
         <p className="hidden md:block text-base leading-relaxed" style={{ color: "var(--color-muted)" }}>
@@ -335,7 +335,7 @@ export default function HomePage() {
             </p>
           </div>
           <ul className="flex flex-col gap-2.5 text-sm flex-1" style={{ color: "var(--color-muted)" }}>
-            {["Полный разбор натальной карты", "4 персональных инсайта", "Солнце, Луна, Асцендент, Энергия", "Без регистрации"].map((item) => (
+            {["Полный разбор натальной карты", "8 персональных инсайтов", "Солнце, Луна, Асцендент, Энергия", "Без регистрации"].map((item) => (
               <li key={item} className="flex items-start gap-2">
                 <span style={{ color: "var(--color-gold)", marginTop: 1 }}>✦</span>
                 <span>{item}</span>
