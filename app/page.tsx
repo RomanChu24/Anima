@@ -107,10 +107,9 @@ export default function HomePage() {
         <h2
           className="mb-3 md:mb-6 font-light"
           style={{
-            fontFamily: "var(--font-cormorant), Georgia, serif",
-            fontSize: "clamp(1rem, 3.5vw, 1.7rem)",
+            fontSize: "clamp(0.95rem, 3vw, 1.35rem)",
             color: "var(--color-gold)",
-            lineHeight: 1.3,
+            lineHeight: 1.5,
             letterSpacing: "0.01em",
           }}
         >
@@ -146,8 +145,8 @@ export default function HomePage() {
         }}
       >
         <h2
-          className="text-lg md:text-xl font-medium mb-3 md:mb-5"
-          style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-gold)" }}
+          className="mb-3 md:mb-5 font-semibold uppercase tracking-[0.15em]"
+          style={{ fontSize: "0.75rem", color: "var(--color-gold)" }}
         >
           Данные рождения
         </h2>
@@ -247,8 +246,8 @@ export default function HomePage() {
         механика
       </p>
       <h2
-        className="text-center text-3xl md:text-4xl font-light mb-16"
-        style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
+        className="text-center text-xl md:text-2xl font-semibold mb-16"
+        style={{ color: "var(--color-primary)", letterSpacing: "0.02em" }}
       >
         Как это работает
       </h2>
@@ -284,8 +283,8 @@ export default function HomePage() {
               {num}
             </span>
             <h3
-              className="text-lg font-medium"
-              style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
+              className="text-sm font-semibold"
+              style={{ color: "var(--color-primary)", letterSpacing: "0.02em" }}
             >
               {title}
             </h3>
@@ -311,8 +310,8 @@ export default function HomePage() {
         тарифы
       </p>
       <h2
-        className="text-center text-3xl md:text-4xl font-light mb-4"
-        style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
+        className="text-center text-xl md:text-2xl font-semibold mb-4"
+        style={{ color: "var(--color-primary)", letterSpacing: "0.02em" }}
       >
         Начни бесплатно
       </h2>
@@ -330,7 +329,7 @@ export default function HomePage() {
             <p className="text-xs tracking-widest uppercase mb-1" style={{ color: "var(--color-muted)" }}>Бесплатно</p>
             <p
               className="text-4xl font-light"
-              style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
+              style={{ color: "var(--color-primary)" }}
             >
               0 ₽
             </p>

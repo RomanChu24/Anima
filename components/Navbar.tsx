@@ -21,11 +21,10 @@ export default function Navbar() {
           ✦
         </span>
         <span
-          className="font-light uppercase"
+          className="font-medium uppercase"
           style={{
-            fontFamily: "var(--font-cormorant), Georgia, serif",
-            fontSize: "1.75rem",
-            letterSpacing: "0.3em",
+            fontSize: "0.85rem",
+            letterSpacing: "0.35em",
             color: "var(--color-primary)",
             lineHeight: 1,
           }}
