@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+:root {
+  --font-cormorant: 'Cormorant Garamond', Georgia, serif;
+  --font-inter: 'Inter', system-ui, sans-serif;
+}
+
 @theme {
   --color-bg: #08061A;
   --color-card: #100E2A;
