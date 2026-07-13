@@ -182,6 +182,25 @@ export default async function ResultPage({
         <InsightCardView type="energy" card={reading.energy} delay={0.45} />
       </div>
 
+      {/* Glossary */}
+      {reading.glossary && (
+        <div
+          className="w-full mt-4 rounded-2xl p-6"
+          style={{
+            background: "rgba(16,14,42,0.4)",
+            border: "1px solid rgba(200,169,107,0.08)",
+            animation: "fadeIn 0.6s ease 0.5s both",
+          }}
+        >
+          <p className="text-xs tracking-[0.2em] uppercase mb-3" style={{ color: "var(--color-muted)" }}>
+            Для тех, кто только знакомится с астрологией
+          </p>
+          <p className="text-sm leading-relaxed" style={{ color: "var(--color-primary)", opacity: 0.75 }}>
+            {reading.glossary}
+          </p>
+        </div>
+      )}
+
       {/* CTA */}
       <div
         className="mt-10 w-full rounded-2xl p-6 text-center"
