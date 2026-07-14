@@ -173,11 +173,19 @@ export default function HomePage() {
               onChange={(e) => set("date", formatDate(e.target.value))}
               inputMode="numeric"
               maxLength={10}
+              style={form.date.length > 0 && form.date.length < 10 ? {
+                borderColor: "rgba(200,169,107,0.7)",
+                boxShadow: "0 0 0 3px rgba(200,169,107,0.12)",
+              } : undefined}
             />
             {errors.date ? (
               <p className="text-xs mt-1.5" style={{ color: "#E88A6B" }}>{errors.date}</p>
-            ) : form.date.length > 0 && form.date.length < 10 ? (
-              <p className="text-xs mt-1.5" style={{ color: "#E8C96B", opacity: 0.8 }}>Год - 4 цифры: 1978, 2002</p>
+            ) : form.date.length >= 5 && form.date.length < 10 ? (
+              <p className="text-xs mt-1.5 font-mono tracking-wider" style={{ color: "var(--color-gold)" }}>
+                <span>{form.date}</span>
+                <span style={{ opacity: 0.35 }}>{form.date.length === 5 ? ".XXXX" : "X".repeat(10 - form.date.length)}</span>
+                <span className="ml-2 font-sans" style={{ opacity: 0.55, fontSize: "0.68rem", letterSpacing: "normal" }}>— год 4 цифры</span>
+              </p>
             ) : (
               <p className="text-xs mt-1.5" style={{ color: "var(--color-muted)", opacity: 0.5 }}>Например: 28.09.1978</p>
             )}
