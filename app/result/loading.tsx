@@ -2,43 +2,34 @@ export default function Loading() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6">
       <style>{`
-        @keyframes breathe {
-          0%, 100% { transform: scale(1); opacity: 0.9; }
-          50% { transform: scale(1.35); opacity: 1; }
-        }
-        @keyframes orbit-glow {
-          0%, 100% { opacity: 0.25; }
-          50% { opacity: 0.7; }
+        @keyframes spin-cw  { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
+        @keyframes spin-ccw { from { transform: rotate(0deg); }   to { transform: rotate(-360deg); } }
+        @keyframes breathe  {
+          0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 6px rgba(200,169,107,0.5)); }
+          50%       { transform: scale(1.35); filter: drop-shadow(0 0 18px rgba(200,169,107,0.9)); }
         }
         @keyframes dot-pulse {
-          0%, 80%, 100% { transform: scale(0.6); opacity: 0.3; }
-          40% { transform: scale(1.3); opacity: 1; }
+          0%, 80%, 100% { transform: scale(0.5); opacity: 0.25; }
+          40%            { transform: scale(1.3); opacity: 1; }
         }
       `}</style>
 
-      <div className="relative w-44 h-44 mb-10">
-        {/* Outer orbit */}
-        <div
-          className="absolute inset-0 rounded-full animate-spin"
-          style={{
-            border: "1.5px solid rgba(200,169,107,0.5)",
-            animation: "spin 8s linear infinite, orbit-glow 3s ease-in-out infinite",
-          }}
-        />
-        {/* Inner orbit */}
-        <div
-          className="absolute inset-6 rounded-full"
-          style={{
-            border: "1.5px solid rgba(123,111,212,0.5)",
-            animation: "spin 5s linear infinite reverse, orbit-glow 2.5s ease-in-out 0.5s infinite",
-          }}
-        />
-        {/* Glow backdrop */}
+      <div className="relative mb-10" style={{ width: 176, height: 176 }}>
+        {/* Outer orbit - clockwise */}
         <div
           className="absolute inset-0 rounded-full"
           style={{
-            background: "radial-gradient(circle, rgba(200,169,107,0.12) 0%, transparent 70%)",
-            animation: "breathe 2.5s ease-in-out infinite",
+            border: "1.5px solid rgba(200,169,107,0.5)",
+            animation: "spin-cw 8s linear infinite",
+          }}
+        />
+        {/* Inner orbit - counter-clockwise */}
+        <div
+          className="absolute rounded-full"
+          style={{
+            inset: 24,
+            border: "1.5px solid rgba(123,111,212,0.5)",
+            animation: "spin-ccw 5s linear infinite",
           }}
         />
         {/* Planet dot on outer orbit */}
@@ -51,18 +42,18 @@ export default function Loading() {
             top: "50%",
             left: -4,
             transform: "translateY(-50%)",
-            boxShadow: "0 0 12px rgba(200,169,107,1)",
+            boxShadow: "0 0 10px rgba(200,169,107,1)",
           }}
         />
-        {/* Star in center */}
+        {/* Star */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span
-            className="text-5xl"
             style={{
+              fontSize: "3rem",
               color: "var(--color-gold)",
               display: "block",
+              lineHeight: 1,
               animation: "breathe 2.5s ease-in-out infinite",
-              filter: "drop-shadow(0 0 10px rgba(200,169,107,0.7))",
             }}
           >
             ✦
@@ -83,7 +74,6 @@ export default function Loading() {
         Читаем расположение планет на момент твоего рождения
       </p>
 
-      {/* Dots */}
       <div className="flex gap-3">
         {[0, 1, 2].map((i) => (
           <div
