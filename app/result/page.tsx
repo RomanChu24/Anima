@@ -138,13 +138,14 @@ export default async function ResultPage({
       })
     : "";
 
-  const planetCards: Array<{ key: keyof ReadingResult; delay: number }> = [
+  const planetCards: Array<{ key: keyof ReadingResult; delay: number; wide?: boolean }> = [
     { key: "sun", delay: 0.1 },
     { key: "moon", delay: 0.15 },
     { key: "rising", delay: 0.2 },
     { key: "mercury", delay: 0.25 },
     { key: "mars", delay: 0.3 },
     { key: "jupiter", delay: 0.35 },
+    { key: "saturn", delay: 0.4, wide: true },
   ];
 
   return (
@@ -167,19 +168,15 @@ export default async function ResultPage({
 
       {/* Planet cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
-        {planetCards.map(({ key, delay }) => (
-          <InsightCardView
-            key={key}
-            type={key}
-            card={reading[key] as { sign?: string; title: string; subtitle: string; text: string }}
-            delay={delay}
-          />
+        {planetCards.map(({ key, delay, wide }) => (
+          <div key={key} className={wide ? "md:col-span-2" : ""}>
+            <InsightCardView
+              type={key}
+              card={reading[key] as { sign?: string; title: string; subtitle: string; text: string }}
+              delay={delay}
+            />
+          </div>
         ))}
-      </div>
-
-      {/* Saturn - full width */}
-      <div className="w-full mt-4">
-        <InsightCardView type="saturn" card={reading.saturn} delay={0.4} />
       </div>
 
       {/* Energy card - full width */}
