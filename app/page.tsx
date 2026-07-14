@@ -171,11 +171,21 @@ export default function HomePage() {
               placeholder="ДД.ММ.ГГГГ"
               value={form.date}
               onChange={(e) => set("date", formatDate(e.target.value))}
+              onBlur={() => {
+                const digits = form.date.replace(/\D/g, "");
+                if (digits.length === 6) {
+                  const yy = parseInt(digits.slice(4, 6));
+                  const fullYear = yy <= 24 ? `20${digits.slice(4, 6)}` : `19${digits.slice(4, 6)}`;
+                  set("date", `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${fullYear}`);
+                }
+              }}
               inputMode="numeric"
               maxLength={10}
             />
-            {errors.date && (
+            {errors.date ? (
               <p className="text-xs mt-1.5" style={{ color: "#E88A6B" }}>{errors.date}</p>
+            ) : (
+              <p className="text-xs mt-1.5" style={{ color: "var(--color-muted)", opacity: 0.5 }}>Например: 28.09.1978</p>
             )}
           </div>
 
