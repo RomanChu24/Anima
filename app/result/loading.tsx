@@ -15,37 +15,57 @@ export default function Loading() {
       `}</style>
 
       <div className="relative mb-10" style={{ width: 176, height: 176 }}>
-        {/* Outer orbit - clockwise */}
+
+        {/* Outer orbit with planet dot as child - dot rotates with the ring */}
         <div
-          className="absolute inset-0 rounded-full"
-          style={{
-            border: "1.5px solid rgba(200,169,107,0.5)",
-            animation: "spin-cw 8s linear infinite",
-          }}
-        />
-        {/* Inner orbit - counter-clockwise */}
+          className="absolute inset-0"
+          style={{ animation: "spin-cw 8s linear infinite" }}
+        >
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{ border: "1.5px solid rgba(200,169,107,0.45)" }}
+          />
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 9,
+              height: 9,
+              background: "var(--color-gold)",
+              top: "50%",
+              left: -4,
+              marginTop: -4,
+              boxShadow: "0 0 10px 2px rgba(200,169,107,0.9)",
+            }}
+          />
+        </div>
+
+        {/* Inner orbit with small dot */}
         <div
           className="absolute rounded-full"
           style={{
             inset: 24,
-            border: "1.5px solid rgba(123,111,212,0.5)",
             animation: "spin-ccw 5s linear infinite",
           }}
-        />
-        {/* Planet dot on outer orbit */}
-        <div
-          className="absolute rounded-full"
-          style={{
-            width: 8,
-            height: 8,
-            background: "var(--color-gold)",
-            top: "50%",
-            left: -4,
-            transform: "translateY(-50%)",
-            boxShadow: "0 0 10px rgba(200,169,107,1)",
-          }}
-        />
-        {/* Star */}
+        >
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{ border: "1.5px solid rgba(123,111,212,0.5)" }}
+          />
+          <div
+            className="absolute rounded-full"
+            style={{
+              width: 5,
+              height: 5,
+              background: "rgba(123,111,212,0.9)",
+              top: "50%",
+              right: -2,
+              marginTop: -2,
+              boxShadow: "0 0 6px 1px rgba(123,111,212,0.7)",
+            }}
+          />
+        </div>
+
+        {/* Star center */}
         <div className="absolute inset-0 flex items-center justify-center">
           <span
             style={{

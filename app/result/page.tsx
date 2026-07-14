@@ -145,7 +145,6 @@ export default async function ResultPage({
     { key: "mercury", delay: 0.25 },
     { key: "mars", delay: 0.3 },
     { key: "jupiter", delay: 0.35 },
-    { key: "saturn", delay: 0.4 },
   ];
 
   return (
@@ -176,6 +175,11 @@ export default async function ResultPage({
             delay={delay}
           />
         ))}
+      </div>
+
+      {/* Saturn - full width */}
+      <div className="w-full mt-4">
+        <InsightCardView type="saturn" card={reading.saturn} delay={0.4} />
       </div>
 
       {/* Energy card - full width */}
