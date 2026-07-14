@@ -124,7 +124,8 @@ export default async function ResultPage({
   let reading: ReadingResult;
   try {
     reading = await generateReading({ name, date, time, city, currentDate });
-  } catch {
+  } catch (err) {
+    console.error("[result] generateReading failed:", err);
     return <ErrorView />;
   }
 

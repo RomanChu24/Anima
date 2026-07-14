@@ -140,37 +140,43 @@ export async function generateReading(params: {
   "glossary": "2-3 предложения для тех, кто не знает астрологию: простыми словами объясни что означают ключевые планеты и знаки в этой карте - без терминов, без перечислений, как будто рассказываешь подруге за чашкой чая"
 }`;
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${key}`,
-      "Content-Type": "application/json",
-      "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://anima-flame.vercel.app",
-      "X-Title": "Anima",
-    },
-    body: JSON.stringify({
-      model: process.env.OPENROUTER_MODEL || "anthropic/claude-haiku-4-5",
-      messages: [
-        { role: "system", content: SYSTEM_PROMPT },
-        { role: "user", content: userPrompt },
-      ],
-      temperature: 0.85,
-      max_tokens: 2000,
-    }),
-  });
+  const callOpenRouter = async () => {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${key}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "https://anima-flame.vercel.app",
+        "X-Title": "Anima",
+      },
+      body: JSON.stringify({
+        model: process.env.OPENROUTER_MODEL || "anthropic/claude-haiku-4-5",
+        messages: [
+          { role: "system", content: SYSTEM_PROMPT },
+          { role: "user", content: userPrompt },
+        ],
+        temperature: 0.85,
+        max_tokens: 2000,
+      }),
+    });
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`OpenRouter error ${response.status}: ${err}`);
-  }
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(`OpenRouter error ${response.status}: ${err}`);
+    }
 
-  const data = await response.json();
-  const content = data?.choices?.[0]?.message?.content;
-  if (!content) throw new Error("Empty response from OpenRouter");
+    const data = await response.json();
+    const content = data?.choices?.[0]?.message?.content;
+    if (!content) throw new Error("Empty response from OpenRouter");
+
+    return JSON.parse(extractJSON(content)) as ReadingResult;
+  };
 
   try {
-    return JSON.parse(extractJSON(content)) as ReadingResult;
-  } catch {
-    throw new Error(`JSON parse failed. Raw: ${content.slice(0, 200)}`);
+    return await callOpenRouter();
+  } catch (err) {
+    console.error("[generateReading] attempt 1 failed:", err);
+    await new Promise((r) => setTimeout(r, 1500));
+    return await callOpenRouter();
   }
 }
