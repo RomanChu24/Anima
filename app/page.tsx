@@ -313,6 +313,71 @@ export default function HomePage() {
       <div className="h-px" style={{ background: "rgba(200,169,107,0.1)" }} />
     </div>
 
+    {/* Отзывы */}
+    <section className="w-full max-w-3xl mx-auto px-6 py-20 md:py-28">
+      <p className="text-center text-xs tracking-[0.3em] uppercase mb-3" style={{ color: "var(--color-muted)" }}>
+        отзывы
+      </p>
+      <h2
+        className="text-center text-xl md:text-2xl font-semibold mb-16"
+        style={{ color: "var(--color-primary)", letterSpacing: "0.02em" }}
+      >
+        Что говорят пользователи
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {[
+          {
+            name: "Дарья",
+            text: "Всё чётко и доступно. Совпало почти на 100%! Интересно было подсветить в себе некоторые моменты. Рекомендую.",
+          },
+          {
+            name: "Ольга",
+            text: "Знала всю информацию про себя заранее — это был тест на точность. Он его прошёл. Ни одной ошибки. И буквально пара минут вместо часа.",
+          },
+          {
+            name: "Сабина",
+            text: "Прикольно, на мой взгляд процентов 80 прям совпадает :)",
+          },
+          {
+            name: "Софья",
+            text: "Я в этом жёсткий скептик) Процентов 30-40, которые выдал - попали в точку)",
+          },
+        ].map(({ name, text }) => (
+          <div
+            key={name}
+            className="rounded-2xl p-6 flex flex-col gap-4"
+            style={{
+              background: "rgba(16,14,42,0.5)",
+              border: "1px solid rgba(200,169,107,0.12)",
+            }}
+          >
+            <span
+              className="text-4xl leading-none"
+              style={{
+                fontFamily: "var(--font-cormorant), Georgia, serif",
+                color: "var(--color-gold)",
+                opacity: 0.4,
+              }}
+            >
+              "
+            </span>
+            <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--color-primary)", opacity: 0.85 }}>
+              {text}
+            </p>
+            <p className="text-xs tracking-wide" style={{ color: "var(--color-muted)" }}>
+              ✦ {name}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Разделитель */}
+    <div className="w-full max-w-3xl mx-auto px-6">
+      <div className="h-px" style={{ background: "rgba(200,169,107,0.1)" }} />
+    </div>
+
     {/* Тарифы */}
     <section
       id="pricing"
