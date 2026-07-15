@@ -343,10 +343,15 @@ export default function HomePage() {
             name: "Софья",
             text: "Я в этом жёсткий скептик) Процентов 30-40, которые выдал - попали в точку)",
           },
-        ].map(({ name, text }) => (
+          {
+            name: "Ирина",
+            text: "Я недавно составляла карту у астролога - она ведическая, асценденты другие. Но характеристика твоя совпадает, много чего четко прям.",
+            wide: true,
+          },
+        ].map(({ name, text, wide }) => (
           <div
             key={name}
-            className="rounded-2xl p-6 flex flex-col gap-4"
+            className={`rounded-2xl p-6 flex flex-col gap-4${wide ? " md:col-span-2" : ""}`}
             style={{
               background: "rgba(16,14,42,0.5)",
               border: "1px solid rgba(200,169,107,0.12)",
