@@ -157,7 +157,7 @@ export async function generateReading(params: {
           { role: "user", content: userPrompt },
         ],
         temperature: 0.85,
-        max_tokens: 2000,
+        max_tokens: 3500,
       }),
     });
 
