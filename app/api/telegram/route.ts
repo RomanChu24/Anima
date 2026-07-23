@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReading } from "@/lib/generateReading";
-import { saveUser, getUser, deleteUser } from "@/lib/kv";
+import { saveUser, getUser, deleteUser, grantAccess } from "@/lib/kv";
 
 export const maxDuration = 60;
 
@@ -32,6 +32,20 @@ async function handleUpdate(update: any) {
 
   const chatId: number = msg.chat.id;
   const text: string = msg.text.trim();
+
+  // /grant <chatId> - admin command to give paid access
+  if (text.startsWith("/grant ")) {
+    const adminId = process.env.ADMIN_TELEGRAM_ID;
+    if (!adminId || String(chatId) !== adminId) return;
+    const targetId = parseInt(text.split(" ")[1]);
+    if (isNaN(targetId)) {
+      await sendMessage(chatId, "Использование: /grant <chatId>");
+      return;
+    }
+    const ok = await grantAccess(targetId);
+    await sendMessage(chatId, ok ? `✓ Доступ выдан: ${targetId}` : `Пользователь ${targetId} не найден`);
+    return;
+  }
 
   // /stop - unsubscribe from weekly digests
   if (text === "/stop") {
@@ -88,13 +102,16 @@ async function handleUpdate(update: any) {
 
       // Save user for weekly digests (silent fail if KV not configured)
       try {
+        const existing2 = await getUser(chatId).catch(() => null);
         await saveUser({
           telegramId: chatId,
           name: data.name,
           birthDate: isoDate,
           birthTime: data.time,
           city: data.city,
-          createdAt: new Date().toISOString(),
+          createdAt: existing2?.createdAt ?? new Date().toISOString(),
+          digestCount: existing2?.digestCount ?? 0,
+          isPaid: existing2?.isPaid ?? false,
         });
       } catch {}
 

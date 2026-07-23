@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllUsers } from "@/lib/kv";
+import { getAllUsers, incrementDigestCount } from "@/lib/kv";
 import { generateDigest, formatDigestForTelegram } from "@/lib/generateDigest";
 
 export const maxDuration = 60;
@@ -32,7 +32,22 @@ export async function GET(req: NextRequest) {
   let sent = 0;
   let failed = 0;
 
+  const PAYMENT_URL = "https://web.tribute.tg/s/Zxn";
+
   for (const user of users) {
+    const digestCount = user.digestCount ?? 0;
+    const isPaid = user.isPaid ?? false;
+
+    // Free users get 1 digest, then paywall
+    if (!isPaid && digestCount >= 1) {
+      await sendMessage(
+        user.telegramId,
+        `✦ <b>Твой еженедельный дайджест готов</b>\n\nТы использовала бесплатный период. Чтобы продолжать получать персональные прогнозы каждую неделю - оформи подписку:\n\n<a href="${PAYMENT_URL}">Подписка 399 ₽/мес</a>\n\nПосле оплаты дайджест придёт в следующий понедельник автоматически ✦`
+      );
+      await new Promise((r) => setTimeout(r, 300));
+      continue;
+    }
+
     try {
       const digest = await generateDigest({
         name: user.name,
@@ -43,6 +58,7 @@ export async function GET(req: NextRequest) {
       });
       const text = formatDigestForTelegram(digest);
       await sendMessage(user.telegramId, text);
+      await incrementDigestCount(user.telegramId);
       await new Promise((r) => setTimeout(r, 300));
       sent++;
     } catch {
