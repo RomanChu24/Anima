@@ -160,7 +160,7 @@ async function handleUpdate(update: any) {
 
   await sendMessage(
     chatId,
-    `Напиши /start чтобы начать ✦\n\nИли пришли данные в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>`
+    `Напиши /start чтобы начать ✦\n\nИли пришли данные в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>\n<i>got: "${text}" len=${text.length}</i>`
   );
 }
 
