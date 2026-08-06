@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateReading } from "@/lib/generateReading";
-import { saveUser, getUser, deleteUser, grantAccess } from "@/lib/kv";
+import { saveUser, getUser, deleteUser, grantAccess, getAllUsers } from "@/lib/kv";
 
 export const maxDuration = 60;
 
@@ -32,6 +32,21 @@ async function handleUpdate(update: any) {
 
   const chatId: number = msg.chat.id;
   const text: string = msg.text.trim();
+
+  // /stats - admin stats
+  if (text === "/stats") {
+    const adminId = process.env.ADMIN_TELEGRAM_ID;
+    if (!adminId || String(chatId) !== adminId) return;
+    const users = await getAllUsers();
+    const total = users.length;
+    const paid = users.filter((u) => u.isPaid).length;
+    const gotDigest = users.filter((u) => !u.isPaid && (u.digestCount ?? 0) >= 1).length;
+    const fresh = users.filter((u) => !u.isPaid && (u.digestCount ?? 0) === 0).length;
+    await sendMessage(chatId,
+      `👥 Всего пользователей: ${total}\n✅ Платных: ${paid}\n🆓 На паузе (получили 1 дайджест): ${gotDigest}\n⏳ Новых (ещё не получили): ${fresh}`
+    );
+    return;
+  }
 
   // /grant <chatId> - admin command to give paid access
   if (text.startsWith("/grant ")) {
