@@ -36,7 +36,10 @@ async function handleUpdate(update: any) {
   // /stats - admin stats
   if (text === "/stats") {
     const adminId = process.env.ADMIN_TELEGRAM_ID;
-    if (!adminId || String(chatId) !== adminId) return;
+    if (!adminId || String(chatId) !== adminId) {
+      await sendMessage(chatId, `debug: adminId=${adminId ?? "unset"} chatId=${chatId}`);
+      return;
+    }
     const users = await getAllUsers();
     const total = users.length;
     const paid = users.filter((u) => u.isPaid).length;
