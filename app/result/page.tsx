@@ -130,6 +130,14 @@ export default async function ResultPage({
   }
 
   const displayName = reading.name || name || "твоя";
+
+  const today = new Date();
+  const dow = today.getDay();
+  const daysUntilMonday = (8 - dow) % 7 || 7;
+  const nextMonday = new Date(today);
+  nextMonday.setDate(today.getDate() + daysUntilMonday);
+  const nextMondayStr = nextMonday.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
+
   const formattedDate = date
     ? new Date(date + "T12:00:00").toLocaleDateString("ru-RU", {
         day: "numeric",
@@ -203,36 +211,62 @@ export default async function ResultPage({
         </div>
       )}
 
-      {/* CTA */}
-      <div
-        className="mt-10 w-full rounded-2xl p-6 text-center"
-        style={{
-          background: "linear-gradient(135deg, rgba(200,169,107,0.12) 0%, rgba(16,14,42,0.8) 100%)",
-          border: "1px solid rgba(200,169,107,0.3)",
-          animation: "fadeIn 0.6s ease 0.5s both",
-        }}
-      >
-        <p
-          className="text-lg font-medium mb-2"
-          style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}
-        >
-          Хочешь знать, что с тобой происходит каждую неделю?
+      {/* Digest Preview */}
+      <div className="w-full mt-8" style={{ animation: "fadeIn 0.6s ease 0.55s both" }}>
+        <p className="text-xs tracking-[0.25em] uppercase text-center mb-4" style={{ color: "var(--color-gold)", opacity: 0.7 }}>
+          ✦ превью понедельничного дайджеста
         </p>
-        <p className="text-sm mb-5" style={{ color: "var(--color-muted)" }}>
-          Персональный дайджест по твоей карте - в Telegram, каждый понедельник
-        </p>
-        <a
-          href="https://t.me/Anima_Card_Bot?start=from_web"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block px-6 py-2.5 rounded-full text-sm font-medium"
-          style={{ background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)", color: "#08061A" }}
-        >
-          Открыть в Telegram
-        </a>
-        <p className="text-xs mt-3" style={{ color: "var(--color-muted)", opacity: 0.5 }}>
-          Бесплатно ✦ <Link href="/#pricing" style={{ textDecoration: "underline" }}>Подробности о подписке</Link>
-        </p>
+        <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(200,169,107,0.25)", background: "rgba(16,14,42,0.8)" }}>
+          {/* Header */}
+          <div className="px-6 py-4 flex items-center gap-3" style={{ borderBottom: "1px solid rgba(200,169,107,0.12)", background: "rgba(200,169,107,0.05)" }}>
+            <span style={{ fontSize: "1.1rem" }}>🗓</span>
+            <div>
+              <p className="text-xs" style={{ color: "var(--color-muted)" }}>Anima · персональный дайджест</p>
+              <p className="text-sm font-medium" style={{ fontFamily: "var(--font-cormorant), Georgia, serif", color: "var(--color-primary)" }}>
+                Понедельник, {nextMondayStr}
+              </p>
+            </div>
+          </div>
+
+          {/* Visible: energy of the week */}
+          <div className="px-6 pt-5 pb-4">
+            <p className="text-xs tracking-wide uppercase mb-2" style={{ color: "var(--color-gold)", opacity: 0.7 }}>✦ энергия недели</p>
+            <p className="text-sm leading-relaxed" style={{ color: "var(--color-primary)", opacity: 0.9 }}>
+              {reading.energy.text}
+            </p>
+          </div>
+
+          {/* Locked: teaser of more content */}
+          <div className="relative px-6 pb-4" style={{ overflow: "hidden" }}>
+            <div style={{ filter: "blur(3px)", userSelect: "none", pointerEvents: "none", opacity: 0.45 }}>
+              <p className="text-xs tracking-wide uppercase mb-2" style={{ color: "var(--color-accent)" }}>✦ личные транзиты</p>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--color-primary)" }}>
+                Венера активирует твой натальный Юпитер - время неожиданных встреч и возможностей. Марс входит в напряжение с твоим Солнцем - важно не форсировать события...
+              </p>
+            </div>
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-1"
+              style={{ background: "linear-gradient(to bottom, transparent 0%, rgba(16,14,42,0.97) 60%)" }}>
+              <p className="text-xs font-medium" style={{ color: "var(--color-muted)" }}>+ персональные транзиты для {displayName}</p>
+              <p className="text-xs" style={{ color: "var(--color-muted)", opacity: 0.6 }}>доступны в Telegram</p>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="px-6 pb-6 pt-2 text-center">
+            <a
+              href="https://t.me/Anima_Card_Bot?start=from_web"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-3.5 rounded-full text-sm font-medium mb-3"
+              style={{ background: "linear-gradient(135deg, #C8A96B 0%, #E8C99B 100%)", color: "#08061A" }}
+            >
+              Получать каждый понедельник в Telegram
+            </a>
+            <p className="text-xs" style={{ color: "var(--color-muted)", opacity: 0.55 }}>
+              Первый дайджест бесплатно ✦ <Link href="/#pricing" style={{ textDecoration: "underline" }}>Подробности о подписке</Link>
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Footer */}
