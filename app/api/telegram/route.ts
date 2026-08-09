@@ -36,10 +36,7 @@ async function handleUpdate(update: any) {
   // /stats - admin stats
   if (text === "/stats") {
     const adminId = process.env.ADMIN_TELEGRAM_ID;
-    if (!adminId || String(chatId) !== adminId) {
-      await sendMessage(chatId, `debug: adminId=${adminId ?? "unset"} chatId=${chatId}`);
-      return;
-    }
+    if (!adminId || String(chatId) !== adminId) return;
     const users = await getAllUsers();
     const total = users.length;
     const paid = users.filter((u) => u.isPaid).length;
@@ -160,7 +157,7 @@ async function handleUpdate(update: any) {
 
   await sendMessage(
     chatId,
-    `Напиши /start чтобы начать ✦\n\nИли пришли данные в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>\n<i>got: "${text}" len=${text.length}</i>`
+    `Напиши /start чтобы начать ✦\n\nИли пришли данные в формате:\n<code>Имя, ДД.ММ.ГГГГ, ЧЧ:ММ, Город</code>`
   );
 }
 

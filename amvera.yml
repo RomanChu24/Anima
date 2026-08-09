@@ -6,7 +6,7 @@ meta:
 
 build:
   buildDir: .
-  buildCmd: npm ci && npm run build
+  buildCmd: rm -rf next-dist && npm ci && npm run build
 
 run:
   persistenceMount: /data
