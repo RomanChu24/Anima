@@ -3,7 +3,10 @@ meta:
   toolchain:
     name: node
     version: 20
-
+build:
+  skip: false
+  additionalCommands: npm run build
 run:
+  command: npx next start -p 80
   persistenceMount: /data
-  runCmd: rm -rf next-dist && npm ci && npm run build && npx next start -p 80
+  containerPort: 80
