@@ -44,14 +44,18 @@ async function handleUpdate(update: any) {
       await sendMessage(chatId, `debug: chatId=${chatId} adminId=${adminId}`);
       return;
     }
-    const users = await getAllUsers();
-    const total = users.length;
-    const paid = users.filter((u) => u.isPaid).length;
-    const gotDigest = users.filter((u) => !u.isPaid && (u.digestCount ?? 0) >= 1).length;
-    const fresh = users.filter((u) => !u.isPaid && (u.digestCount ?? 0) === 0).length;
-    await sendMessage(chatId,
-      `👥 Всего пользователей: ${total}\n✅ Платных: ${paid}\n🆓 На паузе (получили 1 дайджест): ${gotDigest}\n⏳ Новых (ещё не получили): ${fresh}`
-    );
+    try {
+      const users = await getAllUsers();
+      const total = users.length;
+      const paid = users.filter((u) => u.isPaid).length;
+      const gotDigest = users.filter((u) => !u.isPaid && (u.digestCount ?? 0) >= 1).length;
+      const fresh = users.filter((u) => !u.isPaid && (u.digestCount ?? 0) === 0).length;
+      await sendMessage(chatId,
+        `👥 Всего пользователей: ${total}\n✅ Платных: ${paid}\n🆓 На паузе (получили 1 дайджест): ${gotDigest}\n⏳ Новых (ещё не получили): ${fresh}`
+      );
+    } catch (e) {
+      await sendMessage(chatId, `Stats error: ${String(e)}`);
+    }
     return;
   }
 
