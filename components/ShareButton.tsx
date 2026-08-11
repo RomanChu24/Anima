@@ -35,7 +35,7 @@ export default function ShareButton({ name }: { name: string }) {
         background: "rgba(200,169,107,0.06)",
       }}
     >
-      {copied ? "Ссылка скопирована ✦" : "Поделиться с подругой ✦"}
+      {copied ? "Ссылка скопирована ✦" : "Поделиться с близкими ✦"}
     </button>
   );
 }
