@@ -4,6 +4,6 @@ meta:
     name: node
     version: 20
 run:
-  command: npm run build && npx next start -p 80
+  command: npm run start:amvera
   persistenceMount: /data
   containerPort: 80
