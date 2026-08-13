@@ -36,14 +36,7 @@ async function handleUpdate(update: any) {
   // /stats - admin stats
   if (text === "/stats") {
     const adminId = process.env.ADMIN_TELEGRAM_ID;
-    if (!adminId) {
-      await sendMessage(chatId, `debug: ADMIN_TELEGRAM_ID not set. Your chatId: ${chatId}`);
-      return;
-    }
-    if (String(chatId) !== adminId) {
-      await sendMessage(chatId, `debug: chatId=${chatId} adminId=${adminId}`);
-      return;
-    }
+    if (!adminId || String(chatId) !== adminId) return;
     try {
       const users = await getAllUsers();
       const total = users.length;
